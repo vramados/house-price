@@ -1,0 +1,18 @@
+{
+  "rmse": 0.5265,
+  "r2_score": 0.7884,
+  "mae": 0.3516,
+  "epochs": 100,
+  "train_samples": 16512,
+  "test_samples": 4128,
+  "feature_names": [
+    "MedInc",
+    "HouseAge",
+    "AveRooms",
+    "AveBedrms",
+    "Population",
+    "AveOccup",
+    "Latitude",
+    "Longitude"
+  ]
+}

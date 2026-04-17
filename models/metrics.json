@@ -1,0 +1,21 @@
+{
+  "rmse_usd": 111136,
+  "r2_score": 0.9854,
+  "mae_usd": 75900,
+  "epochs": 150,
+  "train_samples": 800,
+  "test_samples": 200,
+  "feature_cols": [
+    "market_rate_per_sqft",
+    "house_sqft",
+    "lot_sqft",
+    "num_beds",
+    "num_baths",
+    "property_type"
+  ],
+  "target": "price_usd",
+  "property_type": {
+    "1": "Single Family",
+    "2": "Condo / Multifamily"
+  }
+}
