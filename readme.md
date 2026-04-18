@@ -62,6 +62,9 @@ X_test_s = scaler.transform(X_test)
 ### Description
 This project uses a **PyTorch Dense MLP regressor** named `HousePriceModel`.
 
+In simple terms, this is a feed-forward neural network for tabular regression.
+It learns non-linear relationships between home attributes and final sale price.
+
 Model details from `train.py`:
 - Input features: 6 (`market_rate_per_sqft`, `house_sqft`, `lot_sqft`, `num_beds`, `num_baths`, `property_type`)
 - Hidden layers: `[256, 128, 64]`
@@ -69,12 +72,25 @@ Model details from `train.py`:
 - Regularization: `BatchNorm1d` + `Dropout(0.15)` after each hidden layer
 - Output layer: 1 neuron (predicts scaled price)
 - Target scaling: `price_usd / 100000`
+- Total trainable parameters: ~43.9K
 
 Training setup used with this model:
 - Loss: `MSELoss`
 - Optimizer: `Adam(lr=0.001, weight_decay=1e-5)`
 - LR scheduler: `ReduceLROnPlateau` with `patience=10`, `factor=0.5`
 - Epochs: `150`, batch size: `64`
+
+### Why this model is a good fit
+- House pricing is usually non-linear (for example, price does not increase at a constant rate with square footage), and MLPs can model these curves.
+- The dataset is structured/tabular with mixed signals (size, lot, bedrooms, bathrooms, market context), which dense networks handle well.
+- Batch normalization and dropout improve generalization and reduce overfitting risk on medium-size datasets.
+- Adam + learning-rate scheduling provides stable training and faster convergence without heavy manual tuning.
+- The architecture is expressive enough to capture interactions, while still small enough to train quickly and deploy easily.
+
+### Trade-offs and limitations
+- MLPs are less interpretable than linear models or tree models.
+- Prediction quality depends heavily on data quality and feature coverage (for example, missing neighborhood attributes can limit accuracy).
+- Performance may improve further with cross-validation and comparison against tree-based baselines (XGBoost/LightGBM/RandomForest).
 
 ### Code
 ```python
