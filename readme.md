@@ -6,6 +6,32 @@ This document defines the six-step flow for building a machine learning model, m
 
 ---
 
+## How It Works (Plain English)
+
+Think of this project like teaching a calculator to estimate house prices.
+
+1. **Show it examples** — We feed the program thousands of real house sales: square footage, bedrooms, bathrooms, location, and the actual price.
+2. **Clean up the data** — We convert messy text (like zip codes) into numbers the program can work with.
+3. **Split into study and exam** — 80% of the data is used to learn ("study"), and 20% is held back to test how well it learned ("exam").
+4. **Let it practice** — The program looks at the study data 150 times (epochs), each time getting a little better at guessing prices.
+5. **Grade it** — We check its guesses against the exam data to see how close it gets (measured in average dollar error).
+6. **Save the brain** — Once trained, the learned knowledge is saved to a file so the program can predict prices instantly without retraining.
+
+### Pipeline Diagram
+
+```mermaid
+flowchart LR
+    A["📄 house_data.csv\n(raw house listings)"] --> B["🧹 Clean & Prep\n(encode zips, scale values)"]
+    B --> C["✂️ Split\n(80% train / 20% test)"]
+    C --> D["🧠 Train Model\n(150 rounds of learning)"]
+    D --> E["📊 Evaluate\n(measure prediction error)"]
+    E --> F["💾 Save Artifacts\n(model weights + metrics)"]
+```
+
+> **In one sentence:** The program studies past house sales, learns patterns between home features and price, and then uses those patterns to predict prices for new homes.
+
+---
+
 ## 1. Data Foundation and Loading
 
 ### Description
