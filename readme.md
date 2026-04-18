@@ -60,9 +60,21 @@ X_test_s = scaler.transform(X_test)
 ## 4. Model Selection and Hyperparameter Choice
 
 ### Description
-Choose the model family and define hyperparameters before training.
+This project uses a **PyTorch Dense MLP regressor** named `HousePriceModel`.
 
-This is the planning phase where you set the search space for optimization.
+Model details from `train.py`:
+- Input features: 6 (`market_rate_per_sqft`, `house_sqft`, `lot_sqft`, `num_beds`, `num_baths`, `property_type`)
+- Hidden layers: `[256, 128, 64]`
+- Activation: `ReLU` after each hidden linear layer
+- Regularization: `BatchNorm1d` + `Dropout(0.15)` after each hidden layer
+- Output layer: 1 neuron (predicts scaled price)
+- Target scaling: `price_usd / 100000`
+
+Training setup used with this model:
+- Loss: `MSELoss`
+- Optimizer: `Adam(lr=0.001, weight_decay=1e-5)`
+- LR scheduler: `ReduceLROnPlateau` with `patience=10`, `factor=0.5`
+- Epochs: `150`, batch size: `64`
 
 ### Code
 ```python
@@ -71,11 +83,32 @@ EPOCHS = 150
 LR = 0.001
 HIDDEN = [256, 128, 64]
 
-# Model skeleton
+# Model definition used in training
 class HousePriceModel(nn.Module):
     def __init__(self, input_size, hidden_sizes):
         super().__init__()
-        # Layers are built from the HIDDEN configuration
+        layers = []
+        in_sz = input_size
+        for h in hidden_sizes:
+            layers += [
+                nn.Linear(in_sz, h),
+                nn.ReLU(),
+                nn.BatchNorm1d(h),
+                nn.Dropout(0.15)
+            ]
+            in_sz = h
+        layers.append(nn.Linear(in_sz, 1))
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.net(x)
+
+model = HousePriceModel(input_size=6, hidden_sizes=HIDDEN)
+loss_fn = nn.MSELoss()
+opt = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-5)
+sched = optim.lr_scheduler.ReduceLROnPlateau(
+    opt, mode="min", patience=10, factor=0.5
+)
 ```
 
 ## 5. Model Training and Optimization
